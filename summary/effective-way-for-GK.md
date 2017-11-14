@@ -1,6 +1,7 @@
 Which is the Effective Way for Gaokao: Information Retrieval or Neural Network?
 ===================
 By Shangmin Guo, Xiangrong, Shizhu He, Kang Liu and Jun Zhao
+
 Reference: [EACL 2017 Paper][2] 
 
 ## Abstract
@@ -8,7 +9,7 @@ National Higher Education Entrance Examination, which is commonly knowns as Gaok
 
 
 ## Motivation: Difficult History Multiple Choice Questions
-Answering real world questions in various subjects it increasingly getting attentions. An ambitious [Project Halo][3] was proposed to create a "digital" Aristotle which can encompass most of the worlds'  scientific knowledge as well as solve hard problems. Important trials include solving mathematic and chemistry questions. In terms of the history questions, there are some NLP attempts for yes-no questions: determining the correctness of the original position [(Kanayama et al., 2012)][4] and recognizing textual entailment between a description in Wikipedia and each options[(Miyao et al,. 2012)][5]. Nevertheless, none of these approaches can solve difficult history multiple choice questions as shown in Figure 1, which require a huge amount of background knowledge. 
+Answering real world questions in various subjects it increasingly getting attentions. An ambitious [Project Halo][3] was proposed to create a "digital" Aristotle which can encompass most of the worlds'  scientific knowledge as well as solve hard problems. Important trials include solving mathematic and chemistry questions. In terms of the history questions, there are some NLP attempts for yes-no questions: determining the correctness of the original position [(Kanayama et al., 2012)][4] and recognizing textual entailment between a description in Wikipedia and each options[(Miyao et al., 2012)][5]. Nevertheless, none of these approaches can solve difficult history multiple choice questions as shown in Figure 1, which require a huge amount of background knowledge. 
 
 ![](https://github.com/ztlbells/cs269-nlp-4-ml/blob/master/summary/F1a.png?raw=true)
 ![](https://github.com/ztlbells/cs269-nlp-4-ml/blob/master/summary/F1b.png?raw=true)
@@ -48,8 +49,7 @@ Since GKHMC questions require finding the most relevant candidate to the questio
 > 3. Candidate with highest score will be chosen as right answer.
 
 **Result**:  Accuracy of EQs and SQs with corresponding best weights. IR works better over EQs than SQs.
-
-| - | EQ-${W_{EQ}}$ | SQ-${W_{SQ}}$
+| -| EQ-${W_{EQ}}$ | SQ-${W_{SQ}}$
 | :--: | :----: | :---: |
 | Accuracy | 49.38% | 28.60% |
 
