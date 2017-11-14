@@ -30,20 +30,24 @@ Wide diversity of resources including Baidu Encyclopedia, textbooks and over 50,
 ## Approaches: IR, NN and Combination
 ### Information Retrieval (IR) 
 Since GKHMC questions require finding the most relevant candidate to the question stem from 4 choices, IR approach is applicable by following the pipeline below:
+
 > 1. Use **Naive Bayes classifier** to classify questions. 
-> - Features include length, entity number and verb number of candidates.
-> - Do 10-folder cross validation on question dataset.
+> > -  Features include length, entity number and verb number of candidates.
+> > - Do 10-folder cross validation on question dataset.
+> 
 > 2. Calculate **relevance scores** for each candidate and combine them with **specific weights** (3 different method with 7 score functions on different indices are provided for the calculation). 
-> - **Lexical Matching Score**: ${Score_{lexical}}$, calculated as below. (${score_{top_{i}}}$ is calculated by [Lucene’s TFIDFSimilarity function][7], denoting the score of the top ${i}$-th returned documents.)
-> $${Score_{lexical}(candidate_k)=\sum_{i=1}^3(score_{top_{i}})}$$
-> - **Entity Co-Occurrence Score**: ${Score_{co}}$, calculated by [normalized google distance][8].
-> - **Page Link Score**: ${Score_{link}(candidate_k)}$, inspired by [PageRank algorithm][9], calculated as below., Where ${e_i \in E_{stem}, e_j \in E_{candidate_k}}$. $${Score_{link}(candidate_k) = max(Link(e_i, e_j) )}$$
-> - **Training weights and loss function**
-> For each candidate, the score can be calculated as:
-> $${score_{candidate_k}=\sum_{i=1}^7 w_i*f_i(candidate_k)}$$ Then normalize the scores of all candidates:
-> $${score_k=\frac{score_{candidate_k}}{\sum_{i=1}^4(score_{candidate_i})}}$$ The loss function of it is:
-> $${loss_{questions}=-log(1-score_n)}$$
+> > - **Lexical Matching Score**: ${Score_{lexical}}$, calculated as below. (${score_{top_{i}}}$ is calculated by [Lucene’s TFIDFSimilarity function][7], denoting the score of the top ${i}$-th returned documents.)
+>> $${Score_{lexical}(candidate_k)=\sum_{i=1}^3(score_{top_{i}})}$$
+> > - **Entity Co-Occurrence Score**: ${Score_{co}}$, calculated by [normalized google distance][8].
+> > - **Page Link Score**: ${Score_{link}(candidate_k)}$, inspired by [PageRank algorithm][9], calculated as below., Where ${e_i \in E_{stem}, e_j \in E_{candidate_k}}$. $${Score_{link}(candidate_k) = max(Link(e_i, e_j) )}$$
+> > - **Training weights and loss function**
+> > For each candidate, the score can be calculated as:
+> > $${score_{candidate_k}=\sum_{i=1}^7 w_i*f_i(candidate_k)}$$ Then normalize the scores of all candidates:
+> > $${score_k=\frac{score_{candidate_k}}{\sum_{i=1}^4(score_{candidate_i})}}$$ The loss function of it is:
+> > $${loss_{questions}=-log(1-score_n)}$$
+> >
 > 3. Candidate with highest score will be chosen as right answer.
+
 ### Neural Network (NN) 
 ### Results for IR and NN
 ### Combination IR and NN Approach
