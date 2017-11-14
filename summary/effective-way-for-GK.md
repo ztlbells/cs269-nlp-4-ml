@@ -18,11 +18,13 @@ This paper is not the first to solve Gaokao questions, but the former approaches
 
 ### Datasets: Questions and Resources
 All of the questions are from Gaokao all over the country in 2011 - 2015. Questions with graphs are filtered out since solving them requires techniques beyond NLP. The remaining questions are manually tagged as EQs or SQs. The question dataset is in XML format and available [here][1]. Numbers of different kinds of collected multiple-choice questions are listed as below. 
-| Question Type | Candidate Type | Count
+
+| Question Type | Candidate Type | Count|
 | :--: | :----: | :---: |
 | EQ | Entity Question | 160 |
 | SQ | Sentence Question | 584 |
 | ALL | Whatever | 744 |
+
 Wide diversity of resources including Baidu Encyclopedia, textbooks and over 50,000 practice questions are also collected, which is in XML format as well and available [here][6].
 
 ### Approaches: IR, NN and Combination
