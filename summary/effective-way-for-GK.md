@@ -48,6 +48,7 @@ Since GKHMC questions require finding the most relevant candidate to the questio
 > 3. Candidate with highest score will be chosen as right answer.
 
 **Result**:  Accuracy of EQs and SQs with corresponding best weights. IR works better over EQs than SQs.
+
 | || EQ-${W_{EQ}}$ | SQ-${W_{SQ}}$
 | :--: | :----: | :---: |
 | Accuracy | 49.38% | 28.60% |
