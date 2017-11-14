@@ -12,6 +12,7 @@ Answering real world questions in various subjects it increasingly getting atten
 
 ![](https://github.com/ztlbells/cs269-nlp-4-ml/blob/master/summary/F1a.png?raw=true)
 ![](https://github.com/ztlbells/cs269-nlp-4-ml/blob/master/summary/F1b.png?raw=true)
+
 *Figure 1: Examples of history questions. EQ means all of the candidates are entities, which SQ means candidates are parts of the sentence.*
 
 This paper is not the first to solve Gaokao questions, but the former approaches based on information retrieval did not fit well and suffer from limited knowledge resources in their systems. Therefore, works introduced in this paper are mainly focus on solving difficult GKHMC and proposing new approaches to improve accuracy.
@@ -29,7 +30,7 @@ Wide diversity of resources including Baidu Encyclopedia, textbooks and over 50,
 
 ## Approaches and Results: IR, NN and Combination
 ### Information Retrieval (IR) 
-Since GKHMC questions require finding the most relevant candidate to the question stem from 4 choices, IR approach is applicable by following the pipeline below:
+Since GKHMC questions require finding the most relevant candidate to the question stem from 4 choices, IR approach [(source code)][14] is applicable by following the pipeline below:
 > 1. Use **Naive Bayes classifier** to classify questions. 
 > > -  Features include length, entity number and verb number of candidates.
 > > - Do 10-folder cross validation on question dataset.
@@ -52,7 +53,7 @@ Since GKHMC questions require finding the most relevant candidate to the questio
 | Accuracy | 49.38% | 28.60% |
 
 ### Neural Network (NN) 
-Permanent-Provisional Memory Network(PPMN) is introduced in this paper as NN approach, which is designed to handle the joint inference between background knowledge and question stems in GKHMC. The diagram of PPMN is shown in Figure 2.
+Permanent-Provisional Memory Network(PPMN) is introduced in this paper as NN approach, which is designed to handle the joint inference between background knowledge and question stems in GKHMC. The diagram of PPMN[(source code)][15] is shown in Figure 2.
 
 ![](https://github.com/ztlbells/cs269-nlp-4-ml/blob/master/summary/F2.png?raw=true)
 *Figure 2: Diagram of PPMN*
@@ -68,14 +69,31 @@ PPMN is composed of the following 5 modules:
 > 
 > 5.  **Sentence Encoder**: [Gated Recurrent Unit][10] - ${GRU(w_t, h_{t-1})}$, where ${w_t}$ is extract from a word embedding matrix ${W_e}$ initialized by [word2vec][11].  A negative log-likelihood loss function is introduced as ${L = -log(\hat{p}\begin{bmatrix}0\\1\end{bmatrix})}$. In this paper, [AdaDelta][12] is introduced to minimize ${L}$ . Back propagation through time is introduced as well to optimize the calculation of intermediate results.
 
-**Result**: In comparisons among different neural network models (RNN, LSTM, GRU, MemNN, DMN, PPMN, Random), PPMN has the best accuracies in EQs, SQs and ALL (45.63%, 45.72%, 45.70%).
+**Result**: In comparisons among different neural network models (RNN, LSTM, GRU, MemNN, DMN, PPMN, Random), PPMN has the best accuracies in EQs, SQs and ALL. The results are listed as below.
+
+| Model | EQs | SQs | All |
+| :--: | :--: | :---: |:---: |
+| RNN | 36.25% | 29.74%| 31.18%
+| LSTM | 40.63%|40.41% |40.46%|
+| GRU | 40.63% |40.24% |40.32%|
+| MemNN | 43.75% |36.13%| 37.77%|
+| DMN | 44.38% |45.38% |45.16%|
+| PPMN | 45.63% |45.72% |45.70%|
+| Random | 25.00% |25.00% |25.00%|
 
 ### Combination IR and NN Approach
 It is obvious that IR and NN approaches are complementary to some extent, which is intuitively as well. In EQs, information given by question stems is usually the description of the key entity, which is the reason why correct answer has the highest relevance score. However, in SQs, the key entity does not appear in any candidate, which means inference is needed. Therefore, though IR works well in EQs, it is not sufficient to find the correct choice in SQs, while NN works better in SQs.
 
-Considering that some of EQs may be more suitable to be handled as SQs, a hybrid approach is proposed. IR and NN approaches are simply combined via s weights matrix as below, where ${W_i^c}$ denotes the ${i}$-th row of ${W_c}$.
+Considering that (1) some of EQs may be more suitable to be handled as SQs and (2) both character and word embedding are more sufficient to cover the lexical meaning, a hybrid approach is proposed. IR and NN approaches are simply combined via s weights matrix as below, where ${W_i^c}$ denotes the ${i}$-th row of ${W_c}$.
 $${score_{EQ} = W_1^c \begin{bmatrix}{score_{IR}}\\{score_{NN}}\end{bmatrix}}, {score_{SQ} = W_2^c \begin{bmatrix}{score_{IR}}\\{score_{NN}}\end{bmatrix}}$$ 
 The performance of combined model and its comparison to IR and NN approaches are illustrated in Figure 3.
+
+![](https://github.com/ztlbells/cs269-nlp-4-ml/blob/master/summary/F3.png?raw=true)
+
+*Figure 3: Result of different approaches: IR, NN and Combination*
+
+## Conclusion
+The paper details the GKHMC, presents different approaches to address them and compares their performances. According to the results, IR approach is more suitable for EQa while NN approach is more suitable for SQs. The combination of  IR and NN has a state-of-the-art performance on GKHMC, pointing out that hybrid methods may be a better choice in real world scenarios.
 
 
 [1]: https://github.com/IACASNLPIR/GKHMC/blob/master/data/Gaokao744.xml
@@ -90,4 +108,5 @@ The performance of combined model and its comparison to IR and NN approaches are
 [10]: https://en.wikipedia.org/wiki/Gated_recurrent_unit
 [11]: https://en.wikipedia.org/wiki/Word2vec
 [12]: https://arxiv.org/pdf/1212.5701.pdf
-
+[14]: https://github.com/IACASNLPIR/GKHMC/tree/master/IRapproach/src/edu
+[15]: https://github.com/IACASNLPIR/GKHMC/tree/master/NNapproach
