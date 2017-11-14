@@ -27,31 +27,55 @@ All of the questions are from Gaokao all over the country in 2011 - 2015. Questi
 
 Wide diversity of resources including Baidu Encyclopedia, textbooks and over 50,000 practice questions are also collected, which is in XML format as well and available [here][6].
 
-## Approaches: IR, NN and Combination
+## Approaches and Results: IR, NN and Combination
 ### Information Retrieval (IR) 
 Since GKHMC questions require finding the most relevant candidate to the question stem from 4 choices, IR approach is applicable by following the pipeline below:
-
 > 1. Use **Naive Bayes classifier** to classify questions. 
 > > -  Features include length, entity number and verb number of candidates.
 > > - Do 10-folder cross validation on question dataset.
 > 
 > 2. Calculate **relevance scores** for each candidate and combine them with **specific weights** (3 different method with 7 score functions on different indices are provided for the calculation). 
 > > - **Lexical Matching Score**: ${Score_{lexical}}$, calculated as below. (${score_{top_{i}}}$ is calculated by [Lucene’s TFIDFSimilarity function][7], denoting the score of the top ${i}$-th returned documents.)
->> $${Score_{lexical}(candidate_k)=\sum_{i=1}^3(score_{top_{i}})}$$
+> > $${Score_{lexical}(candidate_k)=\sum_{i=1}^3(score_{top_{i}})}$$
 > > - **Entity Co-Occurrence Score**: ${Score_{co}}$, calculated by [normalized google distance][8].
 > > - **Page Link Score**: ${Score_{link}(candidate_k)}$, inspired by [PageRank algorithm][9], calculated as below., Where ${e_i \in E_{stem}, e_j \in E_{candidate_k}}$. $${Score_{link}(candidate_k) = max(Link(e_i, e_j) )}$$
 > > - **Training weights and loss function**
 > > For each candidate, the score can be calculated as:
 > > $${score_{candidate_k}=\sum_{i=1}^7 w_i*f_i(candidate_k)}$$ Then normalize the scores of all candidates:
 > > $${score_k=\frac{score_{candidate_k}}{\sum_{i=1}^4(score_{candidate_i})}}$$ The loss function of it is:
-> > $${loss_{questions}=-log(1-score_n)}$$
-> >
+> > $${loss_{questions}=-log(1-score_n)}$$ As all operations are derivable, gradient descent algorithm can be used to train weights.
 > 3. Candidate with highest score will be chosen as right answer.
 
-### Neural Network (NN) 
-### Results for IR and NN
-### Combination IR and NN Approach
+**Result**:  Accuracy of EQs and SQs with corresponding best weights. IR works better over EQs than SQs.
+| || EQ-${W_{EQ}}$ | SQ-${W_{SQ}}$
+| :--: | :----: | :---: |
+| Accuracy | 49.38% | 28.60% |
 
+### Neural Network (NN) 
+Permanent-Provisional Memory Network(PPMN) is introduced in this paper as NN approach, which is designed to handle the joint inference between background knowledge and question stems in GKHMC. The diagram of PPMN is shown in Figure 2.
+
+![](https://github.com/ztlbells/cs269-nlp-4-ml/blob/master/summary/F2.png?raw=true)
+*Figure 2: Diagram of PPMN*
+
+PPMN is composed of the following 5 modules:
+> 1. **Permanent Memory Module** (Knowledge Base): A constant matrix composed of concatenation of representation vectors of sentences ${[k_1, k_2, ... , k_K]}$, where K is the scale of permanent memory. Only take syllabus of all history courses (${K = 198}$) in terms of time complexity here.
+> 
+> 2.  **Provisional Memory Module**: First inquires current word of background sentences in Permanent Memory Module, then use an attention vector to decide how to adjust itself.
+> 3.  **Input Module**: takes same weight matrix in sentence encoder and calculates the hidden states of each word sequentially. 
+> 4.  **Similarity Judger**
+> > - Input (${[m_K;a]}$): the concatenation of the output from provisional memory and representation of the answer candidate.
+> > - Output: ${score}$ of input (using a classifier based on logistic regression). $${\hat{p} = \sigma(W^l[m_k;a]+b^l),score=softmax(\hat{p})\begin{bmatrix}0\\1\end{bmatrix}}$$
+> 
+> 5.  **Sentence Encoder**: [Gated Recurrent Unit][10] - ${GRU(w_t, h_{t-1})}$, where ${w_t}$ is extract from a word embedding matrix ${W_e}$ initialized by [word2vec][11].  A negative log-likelihood loss function is introduced as ${L = -log(\hat{p}\begin{bmatrix}0\\1\end{bmatrix})}$. In this paper, [AdaDelta][12] is introduced to minimize ${L}$ . Back propagation through time is introduced as well to optimize the calculation of intermediate results.
+
+**Result**: In comparisons among different neural network models (RNN, LSTM, GRU, MemNN, DMN, PPMN, Random), PPMN has the best accuracies in EQs, SQs and ALL (45.63%, 45.72%, 45.70%).
+
+### Combination IR and NN Approach
+It is obvious that IR and NN approaches are complementary to some extent, which is intuitively as well. In EQs, information given by question stems is usually the description of the key entity, which is the reason why correct answer has the highest relevance score. However, in SQs, the key entity does not appear in any candidate, which means inference is needed. Therefore, though IR works well in EQs, it is not sufficient to find the correct choice in SQs, while NN works better in SQs.
+
+Considering that some of EQs may be more suitable to be handled as SQs, a hybrid approach is proposed. IR and NN approaches are simply combined via s weights matrix as below, where ${W_i^c}$ denotes the ${i}$-th row of ${W_c}$.
+$${score_{EQ} = W_1^c \begin{bmatrix}{score_{IR}}\\{score_{NN}}\end{bmatrix}}, {score_{SQ} = W_2^c \begin{bmatrix}{score_{IR}}\\{score_{NN}}\end{bmatrix}}$$ 
+The performance of combined model and its comparison to IR and NN approaches are illustrated in Figure 3.
 
 
 [1]: https://github.com/IACASNLPIR/GKHMC/blob/master/data/Gaokao744.xml
@@ -63,4 +87,7 @@ Since GKHMC questions require finding the most relevant candidate to the questio
 [7]: https://lucene.apache.org/core/4_0_0/core/org/apache/lucene/search/similarities/TFIDFSimilarity.html
 [8]: https://arxiv.org/pdf/cs/0412098.pdf
 [9]: https://en.wikipedia.org/wiki/PageRank
+[10]: https://en.wikipedia.org/wiki/Gated_recurrent_unit
+[11]: https://en.wikipedia.org/wiki/Word2vec
+[12]: https://arxiv.org/pdf/1212.5701.pdf
 
