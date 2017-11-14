@@ -11,8 +11,7 @@ National Higher Education Entrance Examination, which is commonly knowns as Gaok
 ## Motivation: Difficult History Multiple Choice Questions
 Answering real world questions in various subjects it increasingly getting attentions. The [Project Halo][3] was proposed to create a "digital" Aristotle which has most of the worlds'  scientific knowledge as well as solve hard problems. In terms of the history questions, there are some NLP attempts for yes-no questions: determining the correctness of the original position [(Kanayama et al., 2012)][4] and recognizing textual entailment between a description in Wikipedia and each options[(Miyao et al., 2012)][5]. Nevertheless, none of these approaches can solve difficult history multiple choice questions as shown in Figure 1, which require a huge amount of background knowledge. 
 
-![](https://github.com/ztlbells/cs269-nlp-4-ml/blob/master/summary/F1a.png?raw=true)
-![](https://github.com/ztlbells/cs269-nlp-4-ml/blob/master/summary/F1b.png?raw=true)
+![](https://github.com/ztlbells/cs269-nlp-4-ml/blob/master/summary/F1.png?raw=true)
 
 *Figure 1: Examples of history questions. EQ means all of the candidates are entities, which SQ means candidates are parts of the sentence.*
 
@@ -63,15 +62,16 @@ PPMN is composed of the following 5 modules:
 
 **Result**: In comparisons among different neural network models (RNN, LSTM, GRU, MemNN, DMN, PPMN, Random), PPMN has the best accuracies in EQs, SQs and ALL for at least two reasons: (1) its stable performance (2) permanent memory module can assist to find inner relationships with background knowledge. The results are listed as below.
 
-| Model | EQs | SQs | All |
-| :--: | :--: | :---: |:---: |
-| RNN | 36.25% | 29.74%| 31.18%
-| LSTM | 40.63%|40.41% |40.46%|
-| GRU | 40.63% |40.24% |40.32%|
-| MemNN | 43.75% |36.13%| 37.77%|
-| DMN | 44.38% |45.38% |45.16%|
-| **PPMN** | **45.63%** |**45.72%** |**45.70%**|
+| Model | EQs | SQs | All | Model | EQs | SQs | All |
+| :--: | :--: | :---: |:---: | :--: | :---: |:---: |:---: |
+| RNN | 36.25% | 29.74%| 31.18%| MemNN | 43.75% |36.13%| 37.77%|
+| LSTM | 40.63%|40.41% |40.46%| DMN | 44.38% |45.38% |45.16%|
+| GRU | 40.63% |40.24% |40.32%| **PPMN** | **45.63%** |**45.72%** |**45.70%**|
 | Random | 25.00% |25.00% |25.00%|
+
+
+
+
 
 
 ### Combination IR and NN Approach
@@ -103,4 +103,3 @@ The paper details the GKHMC, presents different approaches to address them and c
 [12]: https://arxiv.org/pdf/1212.5701.pdf
 [14]: https://github.com/IACASNLPIR/GKHMC/tree/master/IRapproach/src/edu
 [15]: https://github.com/IACASNLPIR/GKHMC/tree/master/NNapproach
-
